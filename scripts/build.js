@@ -20,6 +20,8 @@ const extractErrorCodes = require('./error-codes/extract-errors');
 const alias = require('@rollup/plugin-alias');
 const compiler = require('@ampproject/rollup-plugin-closure-compiler');
 const {exec} = require('child-process-promise');
+const postcss = require('rollup-plugin-postcss');
+const url = require('postcss-url');
 
 const license = ` * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -186,6 +188,9 @@ async function build(name, inputFile, outputPath, outputFile, isProd) {
           return source;
         },
       },
+      postcss({
+        plugins: [url({url: 'inline'})],
+      }),
       nodeResolve({
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       }),
@@ -231,7 +236,7 @@ async function build(name, inputFile, outputPath, outputFile, isProd) {
           isWWW && strictWWWMappings,
         ),
       ),
-      isProd && compiler(closureOptions),
+      isProd && name !== 'Lexical Marfeel' && compiler(closureOptions),
       {
         renderChunk(source) {
           return `${getComment()}
@@ -240,14 +245,19 @@ ${source}`;
       },
     ],
     // This ensures PrismJS imports get included in the bundle
-    treeshake: isWWW || name !== 'Lexical Code' ? 'smallest' : undefined,
+    treeshake:
+      name === 'Lexical Marfeel'
+        ? true
+        : isWWW || name !== 'Lexical Code'
+        ? 'smallest'
+        : undefined,
   };
   const outputOptions = {
     esModule: false,
     exports: 'auto',
     externalLiveBindings: false,
     file: outputFile,
-    format: 'cjs', // change between es and cjs modules
+    format: 'es', // change between es and cjs modules
     freeze: false,
     interop: false,
   };
@@ -571,6 +581,18 @@ const packages = [
     outputPath: './packages/lexical-yjs/dist/',
     packageName: 'lexical-yjs',
     sourcePath: './packages/lexical-yjs/src/',
+  },
+  {
+    modules: [
+      {
+        outputFileName: 'LexicalMarfeel',
+        sourceFileName: 'index.ts',
+      },
+    ],
+    name: 'Lexical Marfeel',
+    outputPath: './packages/lexical-marfeel/dist/',
+    packageName: 'lexical-marfeel',
+    sourcePath: './packages/lexical-marfeel/src/',
   },
 ];
 
