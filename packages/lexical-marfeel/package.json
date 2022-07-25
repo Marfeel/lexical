@@ -1,7 +1,6 @@
 {
   "name": "@marfeel/lexical",
   "version": "0.3.7",
-  "private": true,
   "main": "LexicalMarfeel.js",
   "peerDependencies": {
     "@lexical/clipboard": "0.3.7",
