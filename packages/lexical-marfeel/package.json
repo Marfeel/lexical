@@ -2,6 +2,7 @@
   "name": "@marfeel/lexical",
   "version": "0.3.7",
   "main": "LexicalMarfeel.js",
+  "types": "./src/index.d.ts",
   "peerDependencies": {
     "@lexical/clipboard": "0.3.7",
     "@lexical/code": "0.3.7",

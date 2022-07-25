@@ -20,7 +20,7 @@ import PlaygroundEditorTheme from './themes/PlaygroundEditorTheme';
 export type AppProps = {
   className?: string;
   placeholder?: string;
-  initialState?: EditorState;
+  initialState?: EditorState | string;
   onChange: (state: EditorState) => void;
   element: Element | null;
   tabIndex?: number;
