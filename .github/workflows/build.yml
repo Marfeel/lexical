@@ -30,9 +30,9 @@ jobs:
         run: npm run prepare-release
 
       - name: '🚀 Publish'
-        working-directory: ./packages/lexical-marfeel/npm
         uses: Marfeel/github-actions/common/actions/publish@master
         if: github.event_name == 'push' && github.ref == 'refs/heads/marfeel-master'
+        working-directory: ./packages/lexical-marfeel/npm
         with:
           nexus-token: ${{ secrets.NPM_NEXUS_AUTH }}
           build-number: ${{ github.run_id }}
