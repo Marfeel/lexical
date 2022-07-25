@@ -28,11 +28,9 @@ jobs:
 
       - name: 🛠 Build
         run: npm run prepare-release
-      
-      - name: 'Move to Marfeel Lexical'
-        run: cd ./packages/lexical-marfeel/npm
 
       - name: '🚀 Publish'
+        working-directory: ./packages/lexical-marfeel/npm
         uses: Marfeel/github-actions/common/actions/publish@master
         if: github.event_name == 'push' && github.ref == 'refs/heads/marfeel-master'
         with:
