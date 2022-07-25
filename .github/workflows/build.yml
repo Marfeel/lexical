@@ -6,9 +6,8 @@ on:
       - marfeel-master
 
 jobs:
-  install:
+  publish:
     runs-on: ubuntu-latest
-    name: 📦 Install cache
     steps:
       - uses: actions/checkout@v2
         with:
@@ -16,44 +15,20 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '16.x'
 
-      - name: 'Cache dependencies'
-        id: cache-deps
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: modules-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            modules-
-
-      - name: 'Install dependencies'
-        if: steps.cache-deps.outputs.cache-hit != 'true'
+      - name: 📦 Initialize
         run: npm ci
 
-  build-and-publish:
-    runs-on: ubuntu-latest
-    name: '🛠 Build and Publish 🚀 '
-    needs: [install]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # 👈 Required to retrieve git history
+      - name: 🧹 Lint
+        run: npm run flow
 
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
+      - name: ✅ Tests
+        run: npm run test-unit
 
-      - name: 'Cache dependencies'
-        id: cache-deps
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: modules-${{ hashFiles('package-lock.json') }}
-
-      - name: '🛠 Build'
+      - name: 🛠 Build
         run: npm run prepare-release
-
+      
       - name: 'Move to Marfeel Lexical'
         run: cd ./packages/lexical-marfeel/npm
 
