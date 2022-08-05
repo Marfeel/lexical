@@ -1,0 +1,39 @@
+name: '👷‍♂️ Build'
+
+on:
+  push:
+    branches:
+      - marfeel-master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # 👈 Required to retrieve git history
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: 📦 Initialize
+        run: npm ci
+
+      - name: 🧹 Lint
+        run: npm run flow
+
+      - name: ✅ Tests
+        run: npm run test-unit
+
+      - name: 🛠 Build
+        run: npm run prepare-release
+
+      - name: '🚀 Publish'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/marfeel-master'
+        run: |
+          cd packages/lexical-marfeel/npm
+          npm config set //repositories.mrf.io/nexus/repository/npm-internal/:_authToken ${{ secrets.NPM_NEXUS_AUTH }}
+          npm config set strict-ssl false
+          npx npm-snapshot ${{ github.run_id }} snapshot
+          npm publish

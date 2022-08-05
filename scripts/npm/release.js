@@ -15,7 +15,9 @@ const {exec} = require('child-process-promise');
 const {LEXICAL_PKG, DEFAULT_PKGS} = require('./packages');
 
 async function publish() {
-  const pkgs = [LEXICAL_PKG, ...DEFAULT_PKGS];
+  const pkgs = [LEXICAL_PKG, ...DEFAULT_PKGS].filter(
+    (s) => s !== 'lexical-marfeel',
+  );
 
   console.info(
     `You're about to publish:
